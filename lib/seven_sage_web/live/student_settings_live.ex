@@ -13,6 +13,25 @@ defmodule SevenSageWeb.StudentSettingsLive do
     <div class="space-y-12 divide-y">
       <div>
         <.simple_form
+          for={@score_form}
+          id="score_form"
+          phx-submit="update_score"
+          phx-change="validate_score"
+        >
+          <.input
+            field={@score_form[:lsat_score]}
+            type="text"
+            label="Score"
+            placeholder="Enter your LSAT score"
+            required
+          />
+          <:actions>
+            <.button phx-disable-with="Changing...">Change Score</.button>
+          </:actions>
+        </.simple_form>
+      </div>
+      <div>
+        <.simple_form
           for={@email_form}
           id="email_form"
           phx-submit="update_email"
@@ -90,6 +109,7 @@ defmodule SevenSageWeb.StudentSettingsLive do
     student = socket.assigns.current_student
     email_changeset = Accounts.change_student_email(student)
     password_changeset = Accounts.change_student_password(student)
+    score_changeset = Accounts.change_student_score(student)
 
     socket =
       socket
@@ -98,6 +118,7 @@ defmodule SevenSageWeb.StudentSettingsLive do
       |> assign(:current_email, student.email)
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
+      |> assign(:score_form, to_form(score_changeset))
       |> assign(:trigger_submit, false)
 
     {:ok, socket}
@@ -113,6 +134,29 @@ defmodule SevenSageWeb.StudentSettingsLive do
       |> to_form()
 
     {:noreply, assign(socket, email_form: email_form, email_form_current_password: password)}
+  end
+
+  def handle_event("validate_score", params, socket) do
+    %{"student" => student_params} = params
+
+    score_form =
+      socket.assigns.current_student
+      |> Accounts.change_student_score(student_params)
+      |> Map.put(:action, :validate)
+      |> to_form()
+
+    {:noreply, assign(socket, score_form: score_form)}
+  end
+
+  def handle_event("update_score", params, socket) do
+    %{"student" => student_params} = params
+
+    updated_user = Accounts.update_student_score(socket.assigns.current_student, student_params)
+    # socket.assigns.current_student
+    # |> Accounts.change_student_score(student_params)
+    # |> SevenSage.Repo.update!()
+
+    {:noreply, assign(socket, current_user: updated_user)}
   end
 
   def handle_event("update_email", params, socket) do
