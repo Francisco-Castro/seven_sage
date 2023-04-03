@@ -165,13 +165,22 @@ defmodule SevenSageWeb.StudentSettingsLiveTest do
 
       token =
         extract_student_token(fn url ->
-          Accounts.deliver_student_update_email_instructions(%{student | email: email}, student.email, url)
+          Accounts.deliver_student_update_email_instructions(
+            %{student | email: email},
+            student.email,
+            url
+          )
         end)
 
       %{conn: log_in_student(conn, student), token: token, email: email, student: student}
     end
 
-    test "updates the student email once", %{conn: conn, student: student, token: token, email: email} do
+    test "updates the student email once", %{
+      conn: conn,
+      student: student,
+      token: token,
+      email: email
+    } do
       {:error, redirect} = live(conn, ~p"/students/settings/confirm_email/#{token}")
 
       assert {:live_redirect, %{to: path, flash: flash}} = redirect

@@ -32,12 +32,16 @@ defmodule SevenSageWeb.StudentAuthTest do
     end
 
     test "redirects to the configured path", %{conn: conn, student: student} do
-      conn = conn |> put_session(:student_return_to, "/hello") |> StudentAuth.log_in_student(student)
+      conn =
+        conn |> put_session(:student_return_to, "/hello") |> StudentAuth.log_in_student(student)
+
       assert redirected_to(conn) == "/hello"
     end
 
     test "writes a cookie if remember_me is configured", %{conn: conn, student: student} do
-      conn = conn |> fetch_cookies() |> StudentAuth.log_in_student(student, %{"remember_me" => "true"})
+      conn =
+        conn |> fetch_cookies() |> StudentAuth.log_in_student(student, %{"remember_me" => "true"})
+
       assert get_session(conn, :student_token) == conn.cookies[@remember_me_cookie]
 
       assert %{value: signed_token, max_age: max_age} = conn.resp_cookies[@remember_me_cookie]
@@ -86,7 +90,12 @@ defmodule SevenSageWeb.StudentAuthTest do
   describe "fetch_current_student/2" do
     test "authenticates student from session", %{conn: conn, student: student} do
       student_token = Accounts.generate_student_session_token(student)
-      conn = conn |> put_session(:student_token, student_token) |> StudentAuth.fetch_current_student([])
+
+      conn =
+        conn
+        |> put_session(:student_token, student_token)
+        |> StudentAuth.fetch_current_student([])
+
       assert conn.assigns.current_student.id == student.id
     end
 
@@ -118,7 +127,10 @@ defmodule SevenSageWeb.StudentAuthTest do
   end
 
   describe "on_mount: mount_current_student" do
-    test "assigns current_student based on a valid student_token ", %{conn: conn, student: student} do
+    test "assigns current_student based on a valid student_token ", %{
+      conn: conn,
+      student: student
+    } do
       student_token = Accounts.generate_student_session_token(student)
       session = conn |> put_session(:student_token, student_token) |> get_session()
 
@@ -128,7 +140,9 @@ defmodule SevenSageWeb.StudentAuthTest do
       assert updated_socket.assigns.current_student.id == student.id
     end
 
-    test "assigns nil to current_student assign if there isn't a valid student_token ", %{conn: conn} do
+    test "assigns nil to current_student assign if there isn't a valid student_token ", %{
+      conn: conn
+    } do
       student_token = "invalid_token"
       session = conn |> put_session(:student_token, student_token) |> get_session()
 
@@ -149,7 +163,10 @@ defmodule SevenSageWeb.StudentAuthTest do
   end
 
   describe "on_mount: ensure_authenticated" do
-    test "authenticates current_student based on a valid student_token ", %{conn: conn, student: student} do
+    test "authenticates current_student based on a valid student_token ", %{
+      conn: conn,
+      student: student
+    } do
       student_token = Accounts.generate_student_session_token(student)
       session = conn |> put_session(:student_token, student_token) |> get_session()
 
@@ -214,7 +231,11 @@ defmodule SevenSageWeb.StudentAuthTest do
 
   describe "redirect_if_student_is_authenticated/2" do
     test "redirects if student is authenticated", %{conn: conn, student: student} do
-      conn = conn |> assign(:current_student, student) |> StudentAuth.redirect_if_student_is_authenticated([])
+      conn =
+        conn
+        |> assign(:current_student, student)
+        |> StudentAuth.redirect_if_student_is_authenticated([])
+
       assert conn.halted
       assert redirected_to(conn) == ~p"/"
     end
@@ -264,7 +285,9 @@ defmodule SevenSageWeb.StudentAuthTest do
     end
 
     test "does not redirect if student is authenticated", %{conn: conn, student: student} do
-      conn = conn |> assign(:current_student, student) |> StudentAuth.require_authenticated_student([])
+      conn =
+        conn |> assign(:current_student, student) |> StudentAuth.require_authenticated_student([])
+
       refute conn.halted
       refute conn.status
     end
