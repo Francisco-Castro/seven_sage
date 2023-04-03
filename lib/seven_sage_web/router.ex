@@ -1,6 +1,8 @@
 defmodule SevenSageWeb.Router do
   use SevenSageWeb, :router
 
+  import SevenSageWeb.StudentAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule SevenSageWeb.Router do
     plug :put_root_layout, {SevenSageWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_student
   end
 
   pipeline :api do
@@ -39,6 +42,44 @@ defmodule SevenSageWeb.Router do
 
       live_dashboard "/dashboard", metrics: SevenSageWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+  end
+
+  ## Authentication routes
+
+  scope "/", SevenSageWeb do
+    pipe_through [:browser, :redirect_if_student_is_authenticated]
+
+    live_session :redirect_if_student_is_authenticated,
+      on_mount: [{SevenSageWeb.StudentAuth, :redirect_if_student_is_authenticated}] do
+      live "/students/register", StudentRegistrationLive, :new
+      live "/students/log_in", StudentLoginLive, :new
+      live "/students/reset_password", StudentForgotPasswordLive, :new
+      live "/students/reset_password/:token", StudentResetPasswordLive, :edit
+    end
+
+    post "/students/log_in", StudentSessionController, :create
+  end
+
+  scope "/", SevenSageWeb do
+    pipe_through [:browser, :require_authenticated_student]
+
+    live_session :require_authenticated_student,
+      on_mount: [{SevenSageWeb.StudentAuth, :ensure_authenticated}] do
+      live "/students/settings", StudentSettingsLive, :edit
+      live "/students/settings/confirm_email/:token", StudentSettingsLive, :confirm_email
+    end
+  end
+
+  scope "/", SevenSageWeb do
+    pipe_through [:browser]
+
+    delete "/students/log_out", StudentSessionController, :delete
+
+    live_session :current_student,
+      on_mount: [{SevenSageWeb.StudentAuth, :mount_current_student}] do
+      live "/students/confirm/:token", StudentConfirmationLive, :edit
+      live "/students/confirm", StudentConfirmationInstructionsLive, :new
     end
   end
 end
