@@ -152,9 +152,6 @@ defmodule SevenSageWeb.StudentSettingsLive do
     %{"student" => student_params} = params
 
     updated_user = Accounts.update_student_score(socket.assigns.current_student, student_params)
-    # socket.assigns.current_student
-    # |> Accounts.change_student_score(student_params)
-    # |> SevenSage.Repo.update!()
 
     {:noreply, assign(socket, current_user: updated_user)}
   end
