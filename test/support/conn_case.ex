@@ -35,4 +35,30 @@ defmodule SevenSageWeb.ConnCase do
     SevenSage.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
+
+  @doc """
+  Setup helper that registers and logs in students.
+
+      setup :register_and_log_in_student
+
+  It stores an updated connection and a registered student in the
+  test context.
+  """
+  def register_and_log_in_student(%{conn: conn}) do
+    student = SevenSage.AccountsFixtures.student_fixture()
+    %{conn: log_in_student(conn, student), student: student}
+  end
+
+  @doc """
+  Logs the given `student` into the `conn`.
+
+  It returns an updated `conn`.
+  """
+  def log_in_student(conn, student) do
+    token = SevenSage.Accounts.generate_student_session_token(student)
+
+    conn
+    |> Phoenix.ConnTest.init_test_session(%{})
+    |> Plug.Conn.put_session(:student_token, token)
+  end
 end
