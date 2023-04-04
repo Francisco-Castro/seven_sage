@@ -5,8 +5,8 @@ defmodule SevenSageWeb.StudentSettingsLiveTest do
   import Phoenix.LiveViewTest
   import SevenSage.AccountsFixtures
 
-  @min_score_allowed 120
-  @max_score_allowed 180
+  @min_score_allowed Constants.min_LSAT_score_allowed()
+  @max_score_allowed Constants.max_LSAT_score_allowed()
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do

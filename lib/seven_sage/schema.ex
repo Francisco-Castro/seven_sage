@@ -5,6 +5,7 @@ defmodule SevenSage.Schema do
 
   defmacro __using__(_) do
     quote do
+      alias SevenSage.Constants
       use Ecto.Schema
       import Ecto.Changeset
       import Ecto.Query

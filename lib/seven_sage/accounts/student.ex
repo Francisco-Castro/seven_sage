@@ -35,11 +35,17 @@ defmodule SevenSage.Accounts.Student do
       Defaults to `true`.
   """
 
+  @min_score_allowed Constants.min_LSAT_score_allowed()
+  @max_score_allowed Constants.max_LSAT_score_allowed()
+
   def lsat_changeset(student, attrs) do
     student
     |> cast(attrs, [:lsat_score])
     |> validate_required([:lsat_score])
-    |> validate_number(:lsat_score, greater_than_or_equal_to: 120, less_than_or_equal_to: 180)
+    |> validate_number(:lsat_score,
+      greater_than_or_equal_to: @min_score_allowed,
+      less_than_or_equal_to: @max_score_allowed
+    )
   end
 
   def registration_changeset(student, attrs, opts \\ []) do
