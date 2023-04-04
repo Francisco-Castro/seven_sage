@@ -42,7 +42,7 @@ Now that John has some reassurance that he will be admitted to at least one of t
 Case L25: 
 Finally, John asks the application to include even those universities into which he has a below average chance of admission (L25). The app adds to the (L50) list, two additional Law Schools: Harvard and Yale. While his chances of admission to these institutions are not good, he has a slight chance of acceptance. 
 
-
+Note: You can change the score in the settings url: http://localhost:4000/students/settings
 
 
 
