@@ -6,6 +6,7 @@ defmodule SevenSage.Repo.Migrations.CreateStudentsAuthTables do
 
     create table(:students, primary_key: false) do
       add :id, :binary_id, primary_key: true
+      add :name, :string, size: 20
       add :email, :citext, null: false
       add :hashed_password, :string, null: false
       add :confirmed_at, :naive_datetime

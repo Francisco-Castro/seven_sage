@@ -9,3 +9,92 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias SevenSage.Repo
+alias SevenSage.Accounts.Student
+alias SevenSage.Schemas.Score
+
+params = %{
+  name: "John",
+  email: "john@7sage.com",
+  password: "123451234512345"
+}
+
+%Student{}
+|> Student.registration_changeset(params)
+|> Repo.insert!()
+
+%Score{
+  id: Ecto.UUID.generate(),
+  type: :LSAT,
+  rank: 1,
+  school_name: "Yale University",
+  first_year_class: 2018,
+  L75: 176,
+  L50: 173,
+  L25: 170,
+  G75: 3.98,
+  G50: 3.92,
+  G25: 3.84
+}
+|> Repo.insert!()
+
+%Score{
+  id: Ecto.UUID.generate(),
+  type: :LSAT,
+  rank: 2,
+  school_name: "Stanford University",
+  first_year_class: 2018,
+  L75: 174,
+  L50: 171,
+  L25: 169,
+  G75: 3.99,
+  G50: 3.93,
+  G25: 3.82
+}
+|> Repo.insert!()
+
+%Score{
+  id: Ecto.UUID.generate(),
+  type: :LSAT,
+  rank: 4,
+  school_name: "Harvard University",
+  first_year_class: 2018,
+  L75: 175,
+  L50: 173,
+  L25: 170,
+  G75: 3.97,
+  G50: 3.9,
+  G25: 3.8
+}
+|> Repo.insert!()
+
+%Score{
+  id: Ecto.UUID.generate(),
+  type: :LSAT,
+  rank: 3,
+  school_name: "University of Chicago",
+  first_year_class: 2018,
+  L75: 173,
+  L50: 171,
+  L25: 167,
+  G75: 3.96,
+  G50: 3.89,
+  G25: 3.73
+}
+|> Repo.insert!()
+
+%Score{
+  id: Ecto.UUID.generate(),
+  type: :LSAT,
+  rank: 5,
+  school_name: "Columbia University",
+  first_year_class: 2018,
+  L75: 174,
+  L50: 172,
+  L25: 170,
+  G75: 3.84,
+  G50: 3.75,
+  G25: 3.63
+}
+|> Repo.insert!()
