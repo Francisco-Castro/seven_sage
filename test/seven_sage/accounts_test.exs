@@ -37,8 +37,8 @@ defmodule SevenSage.AccountsTest do
 
   describe "get_student!/1" do
     test "raises if id is invalid" do
-      assert_raise Ecto.NoResultsError, fn ->
-        Accounts.get_student!(-1)
+      assert_raise Ecto.Query.CastError, fn ->
+        Accounts.get_student!("invalid_uuid")
       end
     end
 

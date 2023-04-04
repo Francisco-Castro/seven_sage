@@ -1,6 +1,5 @@
 defmodule SevenSage.Accounts.StudentToken do
-  use Ecto.Schema
-  import Ecto.Query
+  use SevenSage.Schema
   alias SevenSage.Accounts.StudentToken
 
   @hash_algorithm :sha256
