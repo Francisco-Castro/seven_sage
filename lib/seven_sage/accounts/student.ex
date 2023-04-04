@@ -51,7 +51,7 @@ defmodule SevenSage.Accounts.Student do
 
   def registration_changeset(student, attrs, opts \\ []) do
     student
-    |> cast(attrs, [:name, :email, :password])
+    |> cast(attrs, [:name, :email, :password, :lsat_score])
     |> validate_email(opts)
     |> validate_password(opts)
   end
