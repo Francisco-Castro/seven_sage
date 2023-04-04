@@ -26,7 +26,7 @@ defmodule SevenSageWeb.RecordsLive do
       </div>
       <div class="flex flex-row items-center justify-center">
         <span class="mr-4">Filter by: </span>
-        <%= for {{label, atom}, index} <- Enum.with_index([{"ALL", ""} ,{"≤ L25", :L25}, {"≤ L50", :L50}, {"≤ L75", :L75}]) do %>
+        <%= for {{label, atom}, index} <- Enum.with_index([{"ALL", ""},{"≥ L75", :L75} ,{"≥ L50", :L50}, {"≥ L25", :L25}]) do %>
           <button
             phx-click="filter"
             value={atom}
