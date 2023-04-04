@@ -1,6 +1,5 @@
 defmodule SevenSage.Accounts.Student do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use SevenSage.Schema
 
   schema "students" do
     field :email, :string

@@ -4,7 +4,8 @@ defmodule SevenSage.Repo.Migrations.CreateStudentsAuthTables do
   def change do
     execute "CREATE EXTENSION IF NOT EXISTS citext", ""
 
-    create table(:students) do
+    create table(:students, primary_key: false) do
+      add :id, :binary_id, primary_key: true
       add :email, :citext, null: false
       add :hashed_password, :string, null: false
       add :confirmed_at, :naive_datetime
@@ -13,8 +14,9 @@ defmodule SevenSage.Repo.Migrations.CreateStudentsAuthTables do
 
     create unique_index(:students, [:email])
 
-    create table(:students_tokens) do
-      add :student_id, references(:students, on_delete: :delete_all), null: false
+    create table(:students_tokens, primary_key: false) do
+      add :id, :binary_id, primary_key: true
+      add :student_id, references(:students, type: :uuid, on_delete: :delete_all), null: false
       add :token, :binary, null: false
       add :context, :string, null: false
       add :sent_to, :string

@@ -38,7 +38,7 @@ defmodule SevenSageWeb.StudentSettingsLiveTest do
     test "updates the student score", %{conn: conn, student: student} do
       score = 170
 
-      assert Accounts.get_student_by_email(student.email).lsat_score == 0
+      assert Accounts.get_student_by_email(student.email).lsat_score == nil
 
       {:ok, lv, _html} = live(conn, ~p"/students/settings")
 
