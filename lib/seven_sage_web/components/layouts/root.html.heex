@@ -12,15 +12,21 @@
     </script>
   </head>
   <body class="bg-white antialiased">
-    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
+    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end h-[60px] mb-10"
+    style="background-color: #AB0C2F">
+      <li>
+        <a href={~p"/"}>
+          <img class="h-[30px] my-5" src={~p"/images/png/7sage-logo-transparent.png"} alt="7sage logo" />
+        </a>
+      </li>
       <%= if @current_student do %>
-        <li class="text-[0.8125rem] leading-6 text-zinc-900">
-          <%= @current_student.email %>
+        <li class="text-[1rem] leading-6 text-stone-200">
+          Hi <%= @current_student.name %>!
         </li>
         <li>
           <.link
             href={~p"/students/settings"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            class="text-[1rem] leading-6 text-stone-200 font-semibold hover:text-stone-50"
           >
             Settings
           </.link>
@@ -29,7 +35,7 @@
           <.link
             href={~p"/students/log_out"}
             method="delete"
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            class="text-[1rem] leading-6 text-stone-200 font-semibold hover:text-stone-50"
           >
             Log out
           </.link>
@@ -38,7 +44,7 @@
         <li>
           <.link
             href={~p"/students/register"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            class="text-[1rem] leading-6 text-stone-200 font-semibold hover:text-stone-50"
           >
             Register
           </.link>
@@ -46,7 +52,7 @@
         <li>
           <.link
             href={~p"/students/log_in"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            class="text-[1rem] leading-6 text-stone-200 font-semibold hover:text-stone-50"
           >
             Log in
           </.link>
