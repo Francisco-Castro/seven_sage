@@ -2,6 +2,7 @@ defmodule SevenSage.Accounts.Student do
   use SevenSage.Schema
 
   schema "students" do
+    field :name, :string
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
@@ -50,7 +51,7 @@ defmodule SevenSage.Accounts.Student do
 
   def registration_changeset(student, attrs, opts \\ []) do
     student
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:name, :email, :password])
     |> validate_email(opts)
     |> validate_password(opts)
   end
