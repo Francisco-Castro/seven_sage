@@ -1,10 +1,10 @@
-defmodule SevenSage.Repo.Migrations.AddScoresTable do
+defmodule SevenSage.Repo.Migrations.AddRecordsTable do
   use Ecto.Migration
 
   def up do
     ScoreTypeEnum.create_type()
 
-    create table(:scores, primary_key: false) do
+    create table(:records, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :type, :score_type, null: false
       add :rank, :integer
@@ -22,7 +22,7 @@ defmodule SevenSage.Repo.Migrations.AddScoresTable do
   end
 
   def down do
-    drop table(:scores)
+    drop table(:records)
 
     ScoreTypeEnum.drop_type()
   end
