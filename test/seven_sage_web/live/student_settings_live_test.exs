@@ -5,6 +5,9 @@ defmodule SevenSageWeb.StudentSettingsLiveTest do
   import Phoenix.LiveViewTest
   import SevenSage.AccountsFixtures
 
+  @min_score_allowed 120
+  @max_score_allowed 180
+
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do
       {:ok, _lv, html} =
@@ -22,6 +25,62 @@ defmodule SevenSageWeb.StudentSettingsLiveTest do
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/students/log_in"
       assert %{"error" => "You must log in to access this page."} = flash
+    end
+  end
+
+  describe "update score form" do
+    setup %{conn: conn} do
+      password = valid_student_password()
+      student = student_fixture(%{password: password})
+      %{conn: log_in_student(conn, student), student: student, password: password}
+    end
+
+    test "updates the student score", %{conn: conn, student: student} do
+      score = 170
+
+      assert Accounts.get_student_by_email(student.email).lsat_score == 0
+
+      {:ok, lv, _html} = live(conn, ~p"/students/settings")
+
+      lv
+      |> form("#score_form", %{
+        "student" => %{"lsat_score" => score}
+      })
+      |> render_submit()
+
+      updated_student = Accounts.get_student_by_email(student.email).lsat_score
+
+      assert updated_student == 170
+    end
+
+    test "renders errors with invalid data (phx-change) below the allowed range", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/students/settings")
+
+      result =
+        lv
+        |> element("#score_form")
+        |> render_change(%{
+          "action" => "update_score",
+          "student" => %{"lsat_score" => 119}
+        })
+
+      assert result =~ "Change Score"
+      assert result =~ "must be greater than or equal to #{@min_score_allowed}"
+    end
+
+    test "renders errors with invalid data (phx-change) above the allowed range", %{conn: conn} do
+      {:ok, lv, _html} = live(conn, ~p"/students/settings")
+
+      result =
+        lv
+        |> element("#score_form")
+        |> render_change(%{
+          "action" => "update_score",
+          "student" => %{"lsat_score" => 181}
+        })
+
+      assert result =~ "Change Score"
+      assert result =~ "must be less than or equal to #{@max_score_allowed}"
     end
   end
 
@@ -165,13 +224,22 @@ defmodule SevenSageWeb.StudentSettingsLiveTest do
 
       token =
         extract_student_token(fn url ->
-          Accounts.deliver_student_update_email_instructions(%{student | email: email}, student.email, url)
+          Accounts.deliver_student_update_email_instructions(
+            %{student | email: email},
+            student.email,
+            url
+          )
         end)
 
       %{conn: log_in_student(conn, student), token: token, email: email, student: student}
     end
 
-    test "updates the student email once", %{conn: conn, student: student, token: token, email: email} do
+    test "updates the student email once", %{
+      conn: conn,
+      student: student,
+      token: token,
+      email: email
+    } do
       {:error, redirect} = live(conn, ~p"/students/settings/confirm_email/#{token}")
 
       assert {:live_redirect, %{to: path, flash: flash}} = redirect

@@ -109,6 +109,40 @@ defmodule SevenSage.Accounts do
   end
 
   @doc """
+  Returns an `%Ecto.Changeset{}` for changing the student score.
+
+  ## Examples
+
+      iex> change_student_score(student)
+      %Ecto.Changeset{data: %Student{}}
+
+  """
+
+  def change_student_score(student, attrs \\ %{}) do
+    Student.lsat_changeset(student, attrs)
+  end
+
+  @doc """
+  Try to update the score of a student.
+  If the score is not in the valid range then a invalid changeset is returned.
+
+  ## Examples
+
+      iex> update_student_score(student, %{lsat: 170})
+      %Student{lsat: 170}
+
+  """
+
+  def update_student_score(student, attrs \\ %{}) do
+    student
+    |> change_student_score(attrs)
+    |> case do
+      %{valid?: true} = changeset -> Repo.update!(changeset)
+      changeset -> changeset
+    end
+  end
+
+  @doc """
   Emulates that the email will change without actually changing
   it in the database.
 
@@ -166,12 +200,21 @@ defmodule SevenSage.Accounts do
       {:ok, %{to: ..., body: ...}}
 
   """
-  def deliver_student_update_email_instructions(%Student{} = student, current_email, update_email_url_fun)
+  def deliver_student_update_email_instructions(
+        %Student{} = student,
+        current_email,
+        update_email_url_fun
+      )
       when is_function(update_email_url_fun, 1) do
-    {encoded_token, student_token} = StudentToken.build_email_token(student, "change:#{current_email}")
+    {encoded_token, student_token} =
+      StudentToken.build_email_token(student, "change:#{current_email}")
 
     Repo.insert!(student_token)
-    StudentNotifier.deliver_update_email_instructions(student, update_email_url_fun.(encoded_token))
+
+    StudentNotifier.deliver_update_email_instructions(
+      student,
+      update_email_url_fun.(encoded_token)
+    )
   end
 
   @doc """
@@ -263,7 +306,11 @@ defmodule SevenSage.Accounts do
     else
       {encoded_token, student_token} = StudentToken.build_email_token(student, "confirm")
       Repo.insert!(student_token)
-      StudentNotifier.deliver_confirmation_instructions(student, confirmation_url_fun.(encoded_token))
+
+      StudentNotifier.deliver_confirmation_instructions(
+        student,
+        confirmation_url_fun.(encoded_token)
+      )
     end
   end
 
@@ -286,7 +333,10 @@ defmodule SevenSage.Accounts do
   defp confirm_student_multi(student) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:student, Student.confirm_changeset(student))
-    |> Ecto.Multi.delete_all(:tokens, StudentToken.student_and_contexts_query(student, ["confirm"]))
+    |> Ecto.Multi.delete_all(
+      :tokens,
+      StudentToken.student_and_contexts_query(student, ["confirm"])
+    )
   end
 
   ## Reset password
@@ -304,7 +354,11 @@ defmodule SevenSage.Accounts do
       when is_function(reset_password_url_fun, 1) do
     {encoded_token, student_token} = StudentToken.build_email_token(student, "reset_password")
     Repo.insert!(student_token)
-    StudentNotifier.deliver_reset_password_instructions(student, reset_password_url_fun.(encoded_token))
+
+    StudentNotifier.deliver_reset_password_instructions(
+      student,
+      reset_password_url_fun.(encoded_token)
+    )
   end
 
   @doc """

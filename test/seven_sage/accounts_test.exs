@@ -59,7 +59,8 @@ defmodule SevenSage.AccountsTest do
     end
 
     test "validates email and password when given" do
-      {:error, changeset} = Accounts.register_student(%{email: "not valid", password: "not valid"})
+      {:error, changeset} =
+        Accounts.register_student(%{email: "not valid", password: "not valid"})
 
       assert %{
                email: ["must have the @ sign and no spaces"],
@@ -168,7 +169,10 @@ defmodule SevenSage.AccountsTest do
 
     test "applies the email without persisting it", %{student: student} do
       email = unique_student_email()
-      {:ok, student} = Accounts.apply_student_email(student, valid_student_password(), %{email: email})
+
+      {:ok, student} =
+        Accounts.apply_student_email(student, valid_student_password(), %{email: email})
+
       assert student.email == email
       assert Accounts.get_student!(student.id).email != email
     end
@@ -200,7 +204,11 @@ defmodule SevenSage.AccountsTest do
 
       token =
         extract_student_token(fn url ->
-          Accounts.deliver_student_update_email_instructions(%{student | email: email}, student.email, url)
+          Accounts.deliver_student_update_email_instructions(
+            %{student | email: email},
+            student.email,
+            url
+          )
         end)
 
       %{student: student, token: token, email: email}
@@ -223,7 +231,9 @@ defmodule SevenSage.AccountsTest do
     end
 
     test "does not update email if student email changed", %{student: student, token: token} do
-      assert Accounts.update_student_email(%{student | email: "current@example.com"}, token) == :error
+      assert Accounts.update_student_email(%{student | email: "current@example.com"}, token) ==
+               :error
+
       assert Repo.get!(Student, student.id).email == student.email
       assert Repo.get_by(StudentToken, student_id: student.id)
     end
@@ -488,7 +498,9 @@ defmodule SevenSage.AccountsTest do
     end
 
     test "updates the password", %{student: student} do
-      {:ok, updated_student} = Accounts.reset_student_password(student, %{password: "new valid password"})
+      {:ok, updated_student} =
+        Accounts.reset_student_password(student, %{password: "new valid password"})
+
       assert is_nil(updated_student.password)
       assert Accounts.get_student_by_email_and_password(student.email, "new valid password")
     end

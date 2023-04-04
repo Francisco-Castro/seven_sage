@@ -7,6 +7,7 @@ defmodule SevenSage.Accounts.Student do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :lsat_score, :integer
 
     timestamps()
   end
@@ -34,6 +35,14 @@ defmodule SevenSage.Accounts.Student do
       submitting the form), this option can be set to `false`.
       Defaults to `true`.
   """
+
+  def lsat_changeset(student, attrs) do
+    student
+    |> cast(attrs, [:lsat_score])
+    |> validate_required([:lsat_score])
+    |> validate_number(:lsat_score, greater_than_or_equal_to: 120, less_than_or_equal_to: 180)
+  end
+
   def registration_changeset(student, attrs, opts \\ []) do
     student
     |> cast(attrs, [:email, :password])

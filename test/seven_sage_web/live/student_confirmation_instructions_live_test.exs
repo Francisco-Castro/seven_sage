@@ -32,7 +32,10 @@ defmodule SevenSageWeb.StudentConfirmationInstructionsLiveTest do
       assert Repo.get_by!(Accounts.StudentToken, student_id: student.id).context == "confirm"
     end
 
-    test "does not send confirmation token if student is confirmed", %{conn: conn, student: student} do
+    test "does not send confirmation token if student is confirmed", %{
+      conn: conn,
+      student: student
+    } do
       Repo.update!(Accounts.Student.confirm_changeset(student))
 
       {:ok, lv, _html} = live(conn, ~p"/students/confirm")
