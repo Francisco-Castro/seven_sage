@@ -2,6 +2,7 @@ defmodule SevenSageWeb.RecordsLive do
   use SevenSageWeb, :live_view
   alias SevenSage.Records
   alias SevenSage.Accounts
+  alias Phoenix.LiveView.JS
 
   def mount(_params, session, socket) do
     %{"student_token" => token} = session
@@ -64,14 +65,12 @@ defmodule SevenSageWeb.RecordsLive do
         <tbody>
           <tr
             :for={record <- @records}
+            phx-click={JS.dispatch("clickonrecord", to: "#card-info")}
             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
           >
-            <th
-              scope="row"
-              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-            >
+            <td class="px-6 py-4">
               <%= record.rank %>
-            </th>
+            </td>
             <td class="px-6 py-4">
               <%= record.school_name %>
             </td>
@@ -91,6 +90,13 @@ defmodule SevenSageWeb.RecordsLive do
         </tbody>
       </table>
     </div>
+    <script>
+      window.addEventListener("clickonrecord", e => {
+        const h5 = document.getElementById('card-info').getElementsByTagName('h5')[0]
+
+        h5.innerHTML = "This should update the title for the selected university"
+          });
+    </script>
     """
   end
 

@@ -11,7 +11,7 @@
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
   </head>
-  <body class="bg-white antialiased">
+  <body class="bg-white antialiased h-screen relative">
     <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end h-[60px] mb-10"
     style="background-color: #AB0C2F">
       <li>
@@ -62,6 +62,20 @@
     <div class="flex flex-col items-center justify-center">
       <div class="w-8/12">
         <%= @inner_content %>
+      </div>
+    </div>
+    <div id="card-info"
+    class="absolute bottom-0 right-0 -translate-x-10">
+      <div
+      class="block max-w-sm rounded-t-lg bg-white p-6 shadow-lg dark:bg-gray-800 border-2 border-b-0 border-t-rose-700 border-r-rose-700 border-l-rose-700">
+      <h5
+        class="mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50">
+        Card title
+      </h5>
+      <p class="mb-4 text-base text-neutral-600 dark:text-neutral-200">
+        Message to the student to give him/her a reference depending on the selected university.
+      </p>
+      <.button>CLOSE</.button>
       </div>
     </div>
   </body>
