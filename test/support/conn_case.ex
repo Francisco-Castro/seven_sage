@@ -19,6 +19,7 @@ defmodule SevenSageWeb.ConnCase do
 
   using do
     quote do
+      alias SevenSage.Constants
       # The default endpoint for testing
       @endpoint SevenSageWeb.Endpoint
 
