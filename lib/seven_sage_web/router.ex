@@ -18,6 +18,12 @@ defmodule SevenSageWeb.Router do
   end
 
   scope "/", SevenSageWeb do
+    pipe_through [:browser, :require_authenticated_student]
+
+    live "/records", RecordsLive
+  end
+
+  scope "/", SevenSageWeb do
     pipe_through :browser
 
     get "/", PageController, :home
