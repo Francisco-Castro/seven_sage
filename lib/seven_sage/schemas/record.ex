@@ -1,7 +1,7 @@
-defmodule SevenSage.Schemas.Score do
+defmodule SevenSage.Schemas.Record do
   use SevenSage.Schema
 
-  schema "scores" do
+  schema "records" do
     field :type, ScoreTypeEnum
     field :rank, :integer
     field :school_name, :string

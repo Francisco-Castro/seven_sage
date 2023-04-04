@@ -12,7 +12,7 @@
 
 alias SevenSage.Repo
 alias SevenSage.Accounts.Student
-alias SevenSage.Schemas.Score
+alias SevenSage.Schemas.Record
 
 params = %{
   name: "John",
@@ -24,7 +24,7 @@ params = %{
 |> Student.registration_changeset(params)
 |> Repo.insert!()
 
-%Score{
+%Record{
   id: Ecto.UUID.generate(),
   type: :LSAT,
   rank: 1,
@@ -39,7 +39,7 @@ params = %{
 }
 |> Repo.insert!()
 
-%Score{
+%Record{
   id: Ecto.UUID.generate(),
   type: :LSAT,
   rank: 2,
@@ -54,7 +54,7 @@ params = %{
 }
 |> Repo.insert!()
 
-%Score{
+%Record{
   id: Ecto.UUID.generate(),
   type: :LSAT,
   rank: 4,
@@ -69,7 +69,7 @@ params = %{
 }
 |> Repo.insert!()
 
-%Score{
+%Record{
   id: Ecto.UUID.generate(),
   type: :LSAT,
   rank: 3,
@@ -84,7 +84,7 @@ params = %{
 }
 |> Repo.insert!()
 
-%Score{
+%Record{
   id: Ecto.UUID.generate(),
   type: :LSAT,
   rank: 5,
