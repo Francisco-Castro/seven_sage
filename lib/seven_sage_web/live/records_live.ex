@@ -1,16 +1,41 @@
 defmodule SevenSageWeb.RecordsLive do
   use SevenSageWeb, :live_view
   alias SevenSage.Records
+  alias SevenSage.Accounts
 
-  def mount(_params, _session, socket) do
-    records = Records.all()
-    {:ok, assign(socket, records: records)}
+  def mount(_params, session, socket) do
+    %{"student_token" => token} = session
+    student = Accounts.get_student_by_session_token(token)
+
+    records = Records.list_records()
+
+    socket =
+      assign(socket,
+        student: student,
+        records: records
+      )
+
+    {:ok, socket}
   end
 
   def render(assigns) do
     ~H"""
-    <div>
-      DASHBOARD
+    <div class="flex flex-row justify-around py-10">
+      <div class="text-2xl">
+        <%= @student.name %>'s score is <span class="font-bold"><%= @student.lsat_score %></span>
+      </div>
+      <div class="flex flex-row items-center justify-center">
+        <span class="mr-4">Filter by: </span>
+        <%= for {{label, atom}, index} <- Enum.with_index([{"ALL", ""} ,{"≤ L25", :L25}, {"≤ L50", :L50}, {"≤ L75", :L75}]) do %>
+          <button
+            phx-click="filter"
+            value={atom}
+            class={"#{rounded_by(index)} hover:cursor-pointer px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"}
+          >
+            <%= label %>
+          </button>
+        <% end %>
+      </div>
     </div>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table class="text-center w-full text-sm text-gray-500 dark:text-gray-400">
@@ -68,4 +93,18 @@ defmodule SevenSageWeb.RecordsLive do
     </div>
     """
   end
+
+  def handle_event("filter", %{"value" => percentile}, socket) do
+    lsat_score = socket.assigns.student.lsat_score
+
+    records = Records.list_records(percentile, lsat_score)
+
+    socket = assign(socket, records: records)
+
+    {:noreply, socket}
+  end
+
+  defp rounded_by(0), do: "rounded-l-lg"
+  defp rounded_by(3), do: "rounded-r-md"
+  defp rounded_by(_), do: "border-t border-b"
 end

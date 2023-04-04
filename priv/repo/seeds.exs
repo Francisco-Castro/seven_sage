@@ -17,7 +17,8 @@ alias SevenSage.Schemas.Record
 params = %{
   name: "John",
   email: "john@7sage.com",
-  password: "123451234512345"
+  password: "123451234512345",
+  lsat_score: 171
 }
 
 %Student{}
@@ -87,7 +88,7 @@ params = %{
 %Record{
   id: Ecto.UUID.generate(),
   type: :LSAT,
-  rank: 5,
+  rank: 4,
   school_name: "Columbia University",
   first_year_class: 2018,
   L75: 174,
@@ -96,5 +97,35 @@ params = %{
   G75: 3.84,
   G50: 3.75,
   G25: 3.63
+}
+|> Repo.insert!()
+
+%Record{
+  id: Ecto.UUID.generate(),
+  type: :LSAT,
+  rank: 7,
+  school_name: "New York University",
+  first_year_class: 2018,
+  L75: 172,
+  L50: 170,
+  L25: 167,
+  G75: 3.9,
+  G50: 3.79,
+  G25: 3.61
+}
+|> Repo.insert!()
+
+%Record{
+  id: Ecto.UUID.generate(),
+  type: :LSAT,
+  rank: 6,
+  school_name: "University of Pennsylvania",
+  first_year_class: 2018,
+  L75: 171,
+  L50: 170,
+  L25: 164,
+  G75: 3.95,
+  G50: 3.89,
+  G25: 3.49
 }
 |> Repo.insert!()
