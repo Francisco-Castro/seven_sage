@@ -3,6 +3,16 @@ defmodule SevenSage.Records do
   alias SevenSage.Repo
   alias SevenSage.Schemas.Record
 
+  def count_records() do
+    Repo.aggregate(Record, :count)
+  end
+
+  def count_records(filter, lsat_score) do
+    from(Record)
+    |> filter_by_percentile(filter, lsat_score)
+    |> Repo.aggregate(:count)
+  end
+
   def list_records() do
     Repo.all(Record)
   end

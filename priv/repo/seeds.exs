@@ -18,7 +18,7 @@ params = %{
   name: "John",
   email: "john@7sage.com",
   password: "123451234512345",
-  lsat_score: 171
+  lsat_score: 167
 }
 
 %Student{}
