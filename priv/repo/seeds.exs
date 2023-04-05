@@ -129,3 +129,18 @@ params = %{
   G25: 3.49
 }
 |> Repo.insert!()
+
+%Record{
+  id: Ecto.UUID.generate(),
+  type: :LSAT,
+  rank: 12,
+  school_name: "Cornell University",
+  first_year_class: 2018,
+  L75: 168,
+  L50: 167,
+  L25: 164,
+  G75: 3.89,
+  G50: 3.82,
+  G25: 3.73
+}
+|> Repo.insert!()

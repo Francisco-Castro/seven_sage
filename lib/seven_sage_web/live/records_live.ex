@@ -2,6 +2,7 @@ defmodule SevenSageWeb.RecordsLive do
   use SevenSageWeb, :live_view
   alias SevenSage.Records
   alias SevenSage.Accounts
+  alias Phoenix.LiveView.JS
 
   def mount(_params, session, socket) do
     %{"student_token" => token} = session
@@ -22,7 +23,8 @@ defmodule SevenSageWeb.RecordsLive do
     ~H"""
     <div class="flex flex-row justify-around py-10">
       <div class="text-2xl">
-        <%= @student.name %>'s score is <span class="font-bold"><%= @student.lsat_score %></span>
+        <%= @student.name %>'s score is
+        <span id="student_score" class="font-bold"><%= @student.lsat_score %></span>
       </div>
       <div class="flex flex-row items-center justify-center">
         <span class="mr-4">Filter by: </span>
@@ -37,7 +39,10 @@ defmodule SevenSageWeb.RecordsLive do
         <% end %>
       </div>
     </div>
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div
+      phx-click-away={JS.hide(to: "#card-info")}
+      class="relative overflow-x-auto shadow-md sm:rounded-lg"
+    >
       <table class="text-center w-full text-sm text-gray-500 dark:text-gray-400">
         <thead class=" text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -64,14 +69,12 @@ defmodule SevenSageWeb.RecordsLive do
         <tbody>
           <tr
             :for={record <- @records}
+            phx-click={JS.dispatch("click_on_record", to: "#card-info")}
             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
           >
-            <th
-              scope="row"
-              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-            >
+            <td class="px-6 py-4">
               <%= record.rank %>
-            </th>
+            </td>
             <td class="px-6 py-4">
               <%= record.school_name %>
             </td>
@@ -91,6 +94,38 @@ defmodule SevenSageWeb.RecordsLive do
         </tbody>
       </table>
     </div>
+    <script>
+      window.addEventListener("click_on_record", e => {
+        const dispatcher = e.detail.dispatcher;
+        const tds = dispatcher.getElementsByTagName('td');
+
+        [rank, school_name, year, l75, l50, l25] = tds
+
+        const card_info = document.getElementById('card-info')
+
+        card_info.style.display = 'block'
+
+        const h5 = card_info.getElementsByTagName('h5')[0]
+        h5.innerHTML = school_name.innerHTML
+
+        const student_score = Number(document.getElementById('student_score').innerHTML)
+
+        const p = card_info.getElementsByTagName('p')[0]
+
+        const result = student_score - Number(l50.innerHTML)
+        const abs_result = Math.abs(result)
+
+        if(result < 0) {
+          position_msg = `${abs_result} point${abs_result == 1 ? "" : "s"} below the median`
+        } else if (result > 0 ) {
+          position_msg = `${result} point${abs_result == 1 ? "" : "s"} above the median`
+        } else {
+          position_msg = `exactly at the median`
+        }
+
+        p.innerHTML = `Ranked #${rank.innerHTML.trim()} in ${year.innerHTML}. With your ${student_score} points, you are ${position_msg}.`
+          });
+    </script>
     """
   end
 
