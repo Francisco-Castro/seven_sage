@@ -65,17 +65,18 @@
       </div>
     </div>
     <div id="card-info"
-    class="absolute bottom-0 right-0 -translate-x-10">
+    class="absolute bottom-0 right-0 -translate-x-10 w-[350px]"
+    style="display: none;">
       <div
       class="block max-w-sm rounded-t-lg bg-white p-6 shadow-lg dark:bg-gray-800 border-2 border-b-0 border-t-rose-700 border-r-rose-700 border-l-rose-700">
       <h5
         class="mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50">
-        Card title
+        
       </h5>
       <p class="mb-4 text-base text-neutral-600 dark:text-neutral-200">
-        Message to the student to give him/her a reference depending on the selected university.
+        
       </p>
-      <.button>CLOSE</.button>
+      <.button phx-click={Phoenix.LiveView.JS.hide(to: "#card-info")}>CLOSE</.button>
       </div>
     </div>
   </body>
