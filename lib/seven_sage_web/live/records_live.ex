@@ -9,11 +9,13 @@ defmodule SevenSageWeb.RecordsLive do
     student = Accounts.get_student_by_session_token(token)
 
     records = Records.list_records()
+    records_length = Records.count_records() |> IO.inspect(label: "ASD")
 
     socket =
       assign(socket,
         student: student,
-        records: records
+        records: records,
+        records_length: records_length
       )
 
     {:ok, socket}
@@ -39,60 +41,68 @@ defmodule SevenSageWeb.RecordsLive do
         <% end %>
       </div>
     </div>
-    <div
-      phx-click-away={JS.hide(to: "#card-info")}
-      class="relative overflow-x-auto shadow-md sm:rounded-lg"
-    >
-      <table class="text-center w-full text-sm text-gray-500 dark:text-gray-400">
-        <thead class=" text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th scope="col" class="px-6 py-3">
-              RANK
-            </th>
-            <th scope="col" class="px-6 py-3">
-              SCHOOL
-            </th>
-            <th scope="col" class="px-6 py-3">
-              FIRST YEAR CLASS
-            </th>
-            <th scope="col" class="px-6 py-3">
-              L75
-            </th>
-            <th scope="col" class="px-6 py-3">
-              L50
-            </th>
-            <th scope="col" class="px-6 py-3">
-              L25
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            :for={record <- @records}
-            phx-click={JS.dispatch("click_on_record", to: "#card-info")}
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-          >
-            <td class="px-6 py-4">
-              <%= record.rank %>
-            </td>
-            <td class="px-6 py-4">
-              <%= record.school_name %>
-            </td>
-            <td class="tpx-6 py-4">
-              <%= record.first_year_class %>
-            </td>
-            <td class="px-6 py-4">
-              <%= Map.get(record, :L75) %>
-            </td>
-            <td class="px-6 py-4">
-              <%= Map.get(record, :L50) %>
-            </td>
-            <td class="px-6 py-4">
-              <%= Map.get(record, :L25) %>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div :if={@records_length == 0} class="text text-center underline">No results</div>
+    <div :if={@records_length > 0} class="relative">
+      <div
+        class="absolute rounded-full w-[40px] h-[40px] flex flex-col justify-center items-center text-white -translate-x-[16px] -translate-y-[16px] shadow-2xl"
+        style="background-color: #AB0C2F;"
+      >
+        <span>
+          <%= @records_length %>
+        </span>
+      </div>
+      <div phx-click-away={JS.hide(to: "#card-info")} class="overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="text-center w-full text-sm text-gray-500 dark:text-gray-400">
+          <thead class=" text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" class="px-6 py-3">
+                RANK
+              </th>
+              <th scope="col" class="px-6 py-3">
+                SCHOOL
+              </th>
+              <th scope="col" class="px-6 py-3">
+                FIRST YEAR CLASS
+              </th>
+              <th scope="col" class="px-6 py-3">
+                L75
+              </th>
+              <th scope="col" class="px-6 py-3">
+                L50
+              </th>
+              <th scope="col" class="px-6 py-3">
+                L25
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              :for={record <- @records}
+              phx-click={JS.dispatch("click_on_record", to: "#card-info")}
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            >
+              <td class="px-6 py-4">
+                <%= record.rank %>
+              </td>
+              <td class="px-6 py-4">
+                <%= record.school_name %>
+              </td>
+              <td class="tpx-6 py-4">
+                <%= record.first_year_class %>
+              </td>
+              <td class="px-6 py-4">
+                <%= Map.get(record, :L75) %>
+              </td>
+              <td class="px-6 py-4">
+                <%= Map.get(record, :L50) %>
+              </td>
+              <td class="px-6 py-4">
+                <%= Map.get(record, :L25) %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <script>
       window.addEventListener("click_on_record", e => {
@@ -133,8 +143,9 @@ defmodule SevenSageWeb.RecordsLive do
     lsat_score = socket.assigns.student.lsat_score
 
     records = Records.list_records(percentile, lsat_score)
+    records_length = Records.count_records(percentile, lsat_score)
 
-    socket = assign(socket, records: records)
+    socket = assign(socket, records: records, records_length: records_length)
 
     {:noreply, socket}
   end

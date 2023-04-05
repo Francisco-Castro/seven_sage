@@ -21,7 +21,7 @@ defmodule SevenSageWeb.StudentSettingsLive do
           <.input
             field={@score_form[:lsat_score]}
             type="text"
-            label="Score"
+            label="LSAT Score"
             placeholder="Enter your LSAT score"
             required
           />

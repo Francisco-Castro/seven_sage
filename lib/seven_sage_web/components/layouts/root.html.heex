@@ -23,10 +23,18 @@
         <li class="text-[1rem] leading-6 text-stone-200">
           Hi <%= @current_student.name %>!
         </li>
+        <li :if={@conn.request_path != ~p"/records"}>
+          <.link
+            href={~p"/records"}
+            class="text-[1rem] leading-6 text-stone-200 font-semibold hover:text-stone-50 hover:underline"
+          >
+            Records
+          </.link>
+        </li>
         <li>
           <.link
             href={~p"/students/settings"}
-            class="text-[1rem] leading-6 text-stone-200 font-semibold hover:text-stone-50"
+            class="text-[1rem] leading-6 text-stone-200 font-semibold hover:text-stone-50 hover:underline"
           >
             Settings
           </.link>
@@ -35,7 +43,7 @@
           <.link
             href={~p"/students/log_out"}
             method="delete"
-            class="text-[1rem] leading-6 text-stone-200 font-semibold hover:text-stone-50"
+            class="text-[1rem] leading-6 text-stone-200 font-semibold hover:text-stone-50 hover:underline"
           >
             Log out
           </.link>
